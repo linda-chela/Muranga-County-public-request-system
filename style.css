@@ -1,0 +1,217 @@
+/* Official Murang'a County Theme Styling */
+:root {
+    --muranga-green: #1b5e20;
+    --muranga-green-hover: #2e7d32;
+    --muranga-gold: #d4af37;
+    --muranga-gold-hover: #f1c40f;
+    --dark-text: #2c3e50;
+    --light-bg: #f8f9fa;
+    --card-bg: #ffffff;
+    --font-size-base: 16px;
+}
+
+body {
+    font-family: 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+    color: var(--dark-text);
+    background-color: var(--light-bg);
+    line-height: 1.6;
+    font-size: var(--font-size-base);
+    margin: 0;
+    padding: 0;
+    transition: background 0.3s, color 0.3s;
+}
+
+/* High Contrast Mode */
+body.high-contrast {
+    background-color: #000000 !important;
+    color: #ffff00 !important;
+}
+
+body.high-contrast .card, 
+body.high-contrast .navbar,
+body.high-contrast .accessibility-bar {
+    background-color: #121212 !important;
+    color: #ffffff !important;
+    border: 2px solid #ffff00 !important;
+}
+
+body.high-contrast a, 
+body.high-contrast .btn {
+    color: #ffff00 !important;
+}
+
+/* Accessibility Top Toolbar */
+.accessibility-bar {
+    background: #e8f5e9;
+    padding: 8px 20px;
+    font-size: 0.85rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #c8e6c9;
+}
+
+.access-btn {
+    background: #ffffff;
+    border: 1px solid #1b5e20;
+    color: #1b5e20;
+    padding: 2px 8px;
+    border-radius: 3px;
+    cursor: pointer;
+    font-weight: bold;
+    margin: 0 2px;
+}
+
+.access-btn:hover {
+    background: #1b5e20;
+    color: #ffffff;
+}
+
+/* Navigation Header */
+.navbar {
+    background-color: var(--muranga-green);
+    color: white;
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.navbar-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.navbar-brand img {
+    height: 42px;
+    width: auto;
+    object-fit: contain;
+}
+
+.navbar a {
+    color: white;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    padding: 6px 12px;
+    border-radius: 4px;
+}
+
+.navbar a:hover {
+    color: var(--muranga-gold);
+    background: rgba(255, 255, 255, 0.1);
+}
+
+/* Container & Layout */
+.container {
+    max-width: 1100px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+/* Cards */
+.card {
+    background: var(--card-bg);
+    padding: 1.8rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    border: 1px solid #e0e0e0;
+    margin-bottom: 1.5rem;
+}
+
+/* Hero Section (Gradient - No image required) */
+.hero-banner {
+    background: linear-gradient(135deg, #1b5e20 0%, #0d3b10 60%, #388e3c 100%);
+    color: #ffffff;
+    padding: 3.5rem 2rem;
+    border-radius: 12px;
+    text-align: center;
+    box-shadow: 0 10px 25px rgba(27, 94, 32, 0.2);
+    border-bottom: 5px solid var(--muranga-gold);
+}
+
+/* Tagline Badges */
+.tagline-badge {
+    display: inline-block;
+    background: var(--muranga-gold);
+    color: #000000;
+    font-weight: 700;
+    padding: 8px 16px;
+    border-radius: 25px;
+    margin: 6px;
+    font-size: 0.9rem;
+}
+
+/* Form Styles */
+.form-group {
+    margin-bottom: 1.2rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.4rem;
+    font-weight: 600;
+}
+
+.form-group input[type="text"],
+.form-group input[type="email"],
+.form-group input[type="password"],
+.form-group input[type="date"],
+.form-group input[type="number"],
+.form-group select, 
+.form-group textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 1rem;
+}
+
+/* Checkbox Label Alignment Fix */
+.checkbox-group {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 1rem;
+    cursor: pointer;
+}
+
+.checkbox-group input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    margin-top: 3px;
+    flex-shrink: 0;
+    cursor: pointer;
+}
+
+.checkbox-group span {
+    font-size: 0.95rem;
+    line-height: 1.4;
+}
+
+/* Buttons */
+.btn {
+    display: inline-block;
+    padding: 10px 22px;
+    border-radius: 6px;
+    font-weight: 600;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-success { background-color: var(--muranga-green); color: #fff; }
+.btn-success:hover { background-color: var(--muranga-green-hover); }
+.btn-gold { background-color: var(--muranga-gold); color: #000; }
+.btn-gold:hover { background-color: var(--muranga-gold-hover); }
+.btn-danger { background-color: #c62828; color: #fff; }
+.btn-danger:hover { background-color: #b71c1c; }
+
+/* Tables */
+table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
+table th, table td { padding: 12px; border: 1px solid #e0e0e0; text-align: left; }
+table th { background-color: var(--muranga-green); color: white; }
+table tr:nth-child(even) { background-color: #f9f9f9; }
