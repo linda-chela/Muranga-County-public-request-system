@@ -30,9 +30,9 @@ To test and evaluate the **Admin Dashboard** and system workflows, use the admin
 
 | Role | Email / Username | Password |
 | :--- | :--- | :--- |
-| **Administrator** | `admin@muranga.go.ke` | `admin123` |
+| **Administrator** | `admin@muranga.go.ke` | `Admin123!` |
 
-> **Note:** Administrative credentials allow access to the centralized analytics view, case routing tools, and status updates (`Pending` $\rightarrow$ `In Progress` $\rightarrow$ `Resolved`).
+> **Note:** Administrative credentials allow access to the centralized analytics view, case routing tools, and status updates (`Pending` → `In Progress` → `Resolved`).
 
 ---
 
