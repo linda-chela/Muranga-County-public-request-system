@@ -24,14 +24,13 @@ A web-based public service request and tracking platform built for citizens and 
 
 ---
 
-## 🔐 Demo Credentials
+## 🔐 Admin Access
 
-To test and evaluate the **Admin Dashboard** and system workflows, use the default accounts below:
+To test and evaluate the **Admin Dashboard** and system workflows, use the administrator account below (citizens can self-register directly via the portal):
 
-| Role | Username / Email | Password |
+| Role | Email / Username | Password |
 | :--- | :--- | :--- |
-| **Administrator** | `admin` | `admin123` |
-| **Test Citizen** | `citizen` | `user123` |
+| **Administrator** | `admin@muranga.go.ke` | `admin123` |
 
 > **Note:** Administrative credentials allow access to the centralized analytics view, case routing tools, and status updates (`Pending` $\rightarrow$ `In Progress` $\rightarrow$ `Resolved`).
 
