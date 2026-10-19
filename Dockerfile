@@ -12,5 +12,8 @@ COPY . /var/www/html/
 RUN sed -i 's/AllowOverride None/AllowOverride All/g' /etc/apache2/apache2.conf
 RUN chown -R www-data:www-data /var/www/html && chmod -R 755 /var/www/html
 
-# Dynamically bind Apache to the deployment platform's $PORT variable
-CMD sed -i "s/80/${PORT:-80}/g" /etc/apache2/ports.conf /etc/apache2/sites-available/000-default.conf && apache2-foreground
+# Update Apache ports to listen on Railway's $PORT environment variable
+RUN sed -i "s/80/\${PORT:-80}/g" /etc/apache2/ports.conf /etc/apache2/sites-available/000-default.conf
+
+# Start Apache in the foreground bound to the port
+CMD apache2-foreground
