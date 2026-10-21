@@ -19,8 +19,25 @@ $in_progress_requests = $pdo->query("SELECT COUNT(*) FROM requests WHERE status 
 $resolved_requests = $pdo->query("SELECT COUNT(*) FROM requests WHERE status = 'Resolved'")->fetchColumn();
 $open_requests = $pending_requests + $in_progress_requests;
 
-// Retrieve all requests with user details
-$stmt = $pdo->query("SELECT r.*, u.fullname FROM requests r LEFT JOIN users u ON r.user_id = u.id ORDER BY r.created_at DESC");
+// --- DYNAMIC FILTERING VIA GET PARAMETER ---
+$filter = $_GET['filter'] ?? 'all';
+
+if ($filter === 'open') {
+    $query = "SELECT r.*, u.fullname FROM requests r LEFT JOIN users u ON r.user_id = u.id WHERE r.status IN ('Pending', 'In Progress') ORDER BY r.created_at DESC";
+    $stmt = $pdo->query($query);
+} elseif ($filter === 'resolved') {
+    $stmt = $pdo->prepare("SELECT r.*, u.fullname FROM requests r LEFT JOIN users u ON r.user_id = u.id WHERE r.status = 'Resolved' ORDER BY r.created_at DESC");
+    $stmt->execute();
+} elseif ($filter === 'pending') {
+    $stmt = $pdo->prepare("SELECT r.*, u.fullname FROM requests r LEFT JOIN users u ON r.user_id = u.id WHERE r.status = 'Pending' ORDER BY r.created_at DESC");
+    $stmt->execute();
+} elseif ($filter === 'in_progress') {
+    $stmt = $pdo->prepare("SELECT r.*, u.fullname FROM requests r LEFT JOIN users u ON r.user_id = u.id WHERE r.status = 'In Progress' ORDER BY r.created_at DESC");
+    $stmt->execute();
+} else {
+    $stmt = $pdo->query("SELECT r.*, u.fullname FROM requests r LEFT JOIN users u ON r.user_id = u.id ORDER BY r.created_at DESC");
+}
+
 $requests = $stmt->fetchAll();
 ?>
 <!DOCTYPE html>
@@ -30,6 +47,26 @@ $requests = $stmt->fetchAll();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard - Murang'a County Public Request System</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        /* Card Links Styling */
+        .card-link {
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+        .card-link .card {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            cursor: pointer;
+        }
+        .card-link .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+        }
+        .card-link.active .card {
+            background-color: #f0f8ff;
+            box-shadow: 0 0 0 2px #0288d1;
+        }
+    </style>
     <script>
         function changeTextSize(action) {
             let body = document.body;
@@ -72,24 +109,32 @@ $requests = $stmt->fetchAll();
 
     <div class="container">
         
-        <!-- BASIC ANALYTICS SUMMARY CARDS -->
-        <h2 style="margin-bottom:1rem; color:var(--dark-text);">📊 Case Analytics Summary</h2>
+        <!-- CLICKABLE ANALYTICS SUMMARY CARDS -->
+        <h2 style="margin-bottom:0.5rem; color:var(--dark-text);">📊 Case Analytics Summary</h2>
+        <p style="margin-bottom:1.5rem; color:#666; font-size:0.9rem;">Click any card below to filter the requests table by status:</p>
+        
         <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:18px; margin-bottom:2rem;">
             
-            <div class="card" style="border-left: 5px solid #0288d1; margin-bottom:0;">
-                <h4 style="color:#666; margin:0; font-size:0.9rem;">Total Requests</h4>
-                <p style="font-size:2rem; font-weight:bold; color:#0288d1; margin:5px 0 0 0;"><?= $total_requests ?></p>
-            </div>
+            <a href="admin.php?filter=all" class="card-link <?= $filter === 'all' ? 'active' : '' ?>">
+                <div class="card" style="border-left: 5px solid #0288d1; margin-bottom:0;">
+                    <h4 style="color:#666; margin:0; font-size:0.9rem;">Total Requests</h4>
+                    <p style="font-size:2rem; font-weight:bold; color:#0288d1; margin:5px 0 0 0;"><?= $total_requests ?></p>
+                </div>
+            </a>
 
-            <div class="card" style="border-left: 5px solid #ed6c02; margin-bottom:0;">
-                <h4 style="color:#666; margin:0; font-size:0.9rem;">Open Cases (Pending + Progress)</h4>
-                <p style="font-size:2rem; font-weight:bold; color:#ed6c02; margin:5px 0 0 0;"><?= $open_requests ?></p>
-            </div>
+            <a href="admin.php?filter=open" class="card-link <?= $filter === 'open' ? 'active' : '' ?>">
+                <div class="card" style="border-left: 5px solid #ed6c02; margin-bottom:0;">
+                    <h4 style="color:#666; margin:0; font-size:0.9rem;">Open Cases (Pending + Progress)</h4>
+                    <p style="font-size:2rem; font-weight:bold; color:#ed6c02; margin:5px 0 0 0;"><?= $open_requests ?></p>
+                </div>
+            </a>
 
-            <div class="card" style="border-left: 5px solid #2e7d32; margin-bottom:0;">
-                <h4 style="color:#666; margin:0; font-size:0.9rem;">Resolved Cases</h4>
-                <p style="font-size:2rem; font-weight:bold; color:#2e7d32; margin:5px 0 0 0;"><?= $resolved_requests ?></p>
-            </div>
+            <a href="admin.php?filter=resolved" class="card-link <?= $filter === 'resolved' ? 'active' : '' ?>">
+                <div class="card" style="border-left: 5px solid #2e7d32; margin-bottom:0;">
+                    <h4 style="color:#666; margin:0; font-size:0.9rem;">Resolved Cases</h4>
+                    <p style="font-size:2rem; font-weight:bold; color:#2e7d32; margin:5px 0 0 0;"><?= $resolved_requests ?></p>
+                </div>
+            </a>
 
             <div class="card" style="border-left: 5px solid #d4af37; margin-bottom:0;">
                 <h4 style="color:#666; margin:0; font-size:0.9rem;">Resolution Rate</h4>
@@ -102,7 +147,18 @@ $requests = $stmt->fetchAll();
 
         <!-- REQUESTS MANAGEMENT TABLE -->
         <div class="card">
-            <h2>Public Requests Management</h2>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+                <h2 style="margin:0;">
+                    Public Requests Management 
+                    <span style="font-size:0.9rem; font-weight:normal; color:#666;">
+                        (Showing: <strong><?= strtoupper(str_replace('_', ' ', $filter)) ?></strong>)
+                    </span>
+                </h2>
+                <?php if ($filter !== 'all'): ?>
+                    <a href="admin.php?filter=all" style="font-size:0.85rem; color:#0288d1; text-decoration:none;">Clear Filter ✖</a>
+                <?php endif; ?>
+            </div>
+
             <table>
                 <thead>
                     <tr>
@@ -117,38 +173,44 @@ $requests = $stmt->fetchAll();
                     </tr>
                 </thead>
                 <tbody>
-                    <?php foreach ($requests as $req): ?>
-                    <tr>
-                        <td>#<?= $req['id'] ?></td>
-                        <td><?= $req['is_anonymous'] ? '🕵️ Anonymous' : htmlspecialchars($req['fullname'] ?? 'Guest Citizen') ?></td>
-                        <td><?= htmlspecialchars($req['constituency'] . ', ' . $req['ward'] . ' (' . $req['village'] . ')') ?></td>
-                        <td><?= htmlspecialchars($req['category']) ?></td>
-                        <td><?= htmlspecialchars($req['description']) ?></td>
-                        <td>
-                            <?php if (!empty($req['attachment'])): ?>
-                                <a href="uploads/<?= htmlspecialchars($req['attachment']) ?>" target="_blank" style="color:var(--muranga-green); font-weight:bold;">View Photo</a>
-                            <?php else: ?>
-                                <span style="color:#aaa;">None</span>
-                            <?php endif; ?>
-                        </td>
-                        <td>
-                            <strong style="color: <?= $req['status'] === 'Resolved' ? 'green' : ($req['status'] === 'In Progress' ? 'blue' : 'orange') ?>;">
-                                <?= htmlspecialchars($req['status']) ?>
-                            </strong>
-                        </td>
-                        <td>
-                            <form method="POST" style="display:flex; gap:5px;">
-                                <input type="hidden" name="request_id" value="<?= $req['id'] ?>">
-                                <select name="status" style="padding:4px; border-radius:4px; font-size:0.85rem;">
-                                    <option value="Pending" <?= $req['status'] === 'Pending' ? 'selected' : '' ?>>Pending</option>
-                                    <option value="In Progress" <?= $req['status'] === 'In Progress' ? 'selected' : '' ?>>In Progress</option>
-                                    <option value="Resolved" <?= $req['status'] === 'Resolved' ? 'selected' : '' ?>>Resolved</option>
-                                </select>
-                                <button type="submit" class="btn btn-success" style="padding:4px 8px; font-size:0.85rem;">Update</button>
-                            </form>
-                        </td>
-                    </tr>
-                    <?php endforeach; ?>
+                    <?php if (empty($requests)): ?>
+                        <tr>
+                            <td colspan="8" style="text-align:center; padding:20px; color:#777;">No requests found matching this filter.</td>
+                        </tr>
+                    <?php else: ?>
+                        <?php foreach ($requests as $req): ?>
+                        <tr>
+                            <td>#<?= $req['id'] ?></td>
+                            <td><?= $req['is_anonymous'] ? '🕵️ Anonymous' : htmlspecialchars($req['fullname'] ?? 'Guest Citizen') ?></td>
+                            <td><?= htmlspecialchars($req['constituency'] . ', ' . $req['ward'] . ' (' . $req['village'] . ')') ?></td>
+                            <td><?= htmlspecialchars($req['category']) ?></td>
+                            <td><?= htmlspecialchars($req['description']) ?></td>
+                            <td>
+                                <?php if (!empty($req['attachment'])): ?>
+                                    <a href="uploads/<?= htmlspecialchars($req['attachment']) ?>" target="_blank" style="color:var(--muranga-green); font-weight:bold;">View Photo</a>
+                                <?php else: ?>
+                                    <span style="color:#aaa;">None</span>
+                                <?php endif; ?>
+                            </td>
+                            <td>
+                                <strong style="color: <?= $req['status'] === 'Resolved' ? 'green' : ($req['status'] === 'In Progress' ? 'blue' : 'orange') ?>;">
+                                    <?= htmlspecialchars($req['status']) ?>
+                                </strong>
+                            </td>
+                            <td>
+                                <form method="POST" style="display:flex; gap:5px;">
+                                    <input type="hidden" name="request_id" value="<?= $req['id'] ?>">
+                                    <select name="status" style="padding:4px; border-radius:4px; font-size:0.85rem;">
+                                        <option value="Pending" <?= $req['status'] === 'Pending' ? 'selected' : '' ?>>Pending</option>
+                                        <option value="In Progress" <?= $req['status'] === 'In Progress' ? 'selected' : '' ?>>In Progress</option>
+                                        <option value="Resolved" <?= $req['status'] === 'Resolved' ? 'selected' : '' ?>>Resolved</option>
+                                    </select>
+                                    <button type="submit" class="btn btn-success" style="padding:4px 8px; font-size:0.85rem;">Update</button>
+                                </form>
+                            </td>
+                        </tr>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
                 </tbody>
             </table>
         </div>
