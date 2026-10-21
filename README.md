@@ -22,20 +22,6 @@ A web-based public service request and tracking platform built for citizens and 
 * **Database:** SQLite 3 (Auto-initializing, light, configuration-free)
 * **Frontend:** HTML5, CSS3 (CSS Variables, Flexbox, Grid), JavaScript (Vanilla JS)
 
----
-
-## 🔐 Admin Access
-
-To test and evaluate the **Admin Dashboard** and system workflows, use the administrator account below (citizens can self-register directly via the portal):
-
-| Role | Email / Username | Password |
-| :--- | :--- | :--- |
-| **Administrator** | `admin@muranga.go.ke` | `Admin123!` |
-
-> **Note:** Administrative credentials allow access to the centralized analytics view, case routing tools, and status updates (`Pending` → `In Progress` → `Resolved`).
-
----
-
 ## 🚀 Deployment
 
 This application is configured for deployment on **Railway** using the standard PHP / Nixpacks build stack with dynamic port binding (`$PORT`).
